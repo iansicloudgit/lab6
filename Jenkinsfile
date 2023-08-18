@@ -15,7 +15,7 @@ pipeline{
                 sh './deploy.sh'
             }
         }
-        stage'push'){
+        stage('push'){
             steps{
                 sh 'echo | \$DOCKERHUB_CREDENTIALS_PSW | docker login -u |\$DOCKERHUB_CREDENTIALS_USR --password-stdin'
                 sh 'docker tag trio-task-mysql:5.7 iangale1965/mytriotasksql1:latest'
