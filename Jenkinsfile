@@ -1,0 +1,28 @@
+pipeline{
+    agent any
+    environment{
+        DOCKERHUB_CREDENTIALS= credentials("dockerhub")
+    }
+    stages{
+        stages('init'){
+            steps{
+                sh 'rm docker rm -f $(docker ps -aq) || true'
+            }
+        }
+        stages('build'){
+            steps{
+                sh 'chmod +x deploy.sh'
+                sh './deploy.sh'
+            }
+        }
+        stage('push'){
+            steps{
+                sh 'echo | $DOCKERHUB_CREDENTIALS_PSW | docker login -u |$DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                sh 'docker tag trio-task-mysql:5.7 iangale1965/mytriotasksql1:latest'
+                sh 'docker tag trio-flask-app iangale1965/trio-flask-app1:latest'       
+                sh 'docker push iangale1965/mytriotasksql1:latest' 
+                sh 'docker push iangale1965/trio-flask-app1:latest' 
+            }
+        }
+   }
+}
